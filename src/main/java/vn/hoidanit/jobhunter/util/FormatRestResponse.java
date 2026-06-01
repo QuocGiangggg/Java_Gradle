@@ -8,9 +8,10 @@ import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpResponse;
 import jakarta.servlet.http.HttpServletResponse;
+import vn.hoidanit.jobhunter.domain.RestResponse;
 
 @ControllerAdvice
-public class FormatRestResponse implements ResponseBodyAdvice {
+public class FormatRestResponse implements ResponseBodyAdvice<Object> {
     @Override
     public boolean supports(MethodParameter returnType, Class converterType) {
         return true; // Áp dụng cho tất cả các controller
@@ -26,6 +27,17 @@ public class FormatRestResponse implements ResponseBodyAdvice {
             ServerHttpResponse response) {
         HttpServletResponse servletResponse = ((ServletServerHttpResponse) response).getServletResponse();
         int statusCode = servletResponse.getStatus();
-        return body;
+
+        RestResponse<Object> res = new RestResponse<Object>();
+        // case error
+        res.setStatuscode(statusCode);
+        if (statusCode >= 400) {
+            return body;
+        } else {
+            // case success
+            res.setData(body);
+            res.setMessage("success");
+        }
+        return res;
     }
 }
