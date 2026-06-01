@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.http.HttpStatus;
+import vn.hoidanit.jobhunter.service.error.IdInvalidException;
 
 import java.util.List;
 
@@ -31,7 +32,11 @@ public class UserController {
     }
 
     @DeleteMapping("/users/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable("id") Long id) {
+    public ResponseEntity<String> deleteUser(@PathVariable("id") Long id) throws IdInvalidException {
+        if (id > 1500) {
+            throw new IdInvalidException("ID must be less than or equal to 1500");
+        }
+
         this.userServices.handleDeleteUser(id);
         // return ResponseEntity.status(HttpStatus.OK).body("User deleted
         // successfully");
