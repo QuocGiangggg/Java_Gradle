@@ -15,8 +15,8 @@ public class GlobalException {
     public ResponseEntity<RestResponse<Object>> handleIdInvalidException(IdInvalidException ex) {
         RestResponse<Object> res = new RestResponse<Object>();
         res.setStatuscode(HttpStatus.BAD_REQUEST.value());
+        res.setMessage("checkmate hoi dan it");
         res.setError(ex.getMessage());
-        res.setMessage("IdInvalidException");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
     }
 }

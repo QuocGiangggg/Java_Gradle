@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.http.HttpStatus;
 import vn.hoidanit.jobhunter.service.error.IdInvalidException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 
@@ -20,13 +21,17 @@ import vn.hoidanit.jobhunter.service.UserServices;
 public class UserController {
 
     private final UserServices userServices;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserController(UserServices userServices) {
+    public UserController(UserServices userServices, PasswordEncoder passwordEncoder) {
         this.userServices = userServices;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @PostMapping("/users")
     public ResponseEntity<User> createNewUser(@RequestBody User user) {
+        String hashPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(hashPassword);
         User newUser = this.userServices.handleCreateUser(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
     }
