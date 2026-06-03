@@ -35,7 +35,7 @@ public class UserServices {
             return null;
     }
 
-    public User handleUpdateUser(User user){
+    public User handleUpdateUser(User user) {
         Optional<User> userOptional = this.userRepository.findById(user.getId());
         if (userOptional.isPresent()) {
             User existingUser = userOptional.get();
@@ -45,5 +45,9 @@ public class UserServices {
             return this.userRepository.save(existingUser);
         } else
             return null;
+    }
+
+    public User handleGetUserByUsername(String username) {
+        return this.userRepository.findByEmail(username);
     }
 }
