@@ -23,7 +23,7 @@ public class UserDetailsCustom implements UserDetailsService {
         vn.hoidanit.jobhunter.domain.User user = this.userServices.handleGetUserByUsername(username);
 
         if (user == null) {
-            throw new UsernameNotFoundException("Username/ Password không hợp lệ");
+            throw new UsernameNotFoundException("Username/Password không hợp lệ");
         }
         return new User(
                 user.getEmail(),

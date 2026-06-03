@@ -9,28 +9,33 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import jakarta.validation.Valid;
-
+import vn.hoidanit.jobhunter.util.SecurityUtil;
+import vn.hoidanit.jobhunter.domain.dto.ResLoginDTO;
 
 @RestController
 public class AuthController {
 
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final SecurityUtil securityUtil;
 
-    public AuthController(AuthenticationManagerBuilder authenticationManagerBuilder) {
+    public AuthController(AuthenticationManagerBuilder authenticationManagerBuilder, SecurityUtil securityUtil) {
         this.authenticationManagerBuilder = authenticationManagerBuilder;
-    }        
+        this.securityUtil = securityUtil;
+    }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginDTO> login(@Valid @RequestBody LoginDTO loginDTO) {
+    public ResponseEntity<ResLoginDTO> login(@Valid @RequestBody LoginDTO loginDTO) {
 
-        UsernamePasswordAuthenticationToken authenticationToken = 
-        new UsernamePasswordAuthenticationToken(
-                loginDTO.getUsername(), 
-                loginDTO.getPassword()
-            );
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                loginDTO.getUsername(),
+                loginDTO.getPassword());
 
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+        // crreate token
 
-        return ResponseEntity.ok().body(loginDTO);
+        String access_token = this.securityUtil.createToken(authentication);
+        ResLoginDTO resLoginDTO = new ResLoginDTO();
+        resLoginDTO.setAccessToken(access_token);
+        return ResponseEntity.ok().body(resLoginDTO);
     }
 }
