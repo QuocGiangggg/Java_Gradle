@@ -8,6 +8,8 @@ import vn.hoidanit.jobhunter.domain.dto.LoginDTO;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import jakarta.validation.Valid;
+
 
 @RestController
 public class AuthController {
@@ -19,7 +21,7 @@ public class AuthController {
     }        
 
     @PostMapping("/login")
-    public ResponseEntity<LoginDTO> login(@RequestBody LoginDTO loginDTO) {
+    public ResponseEntity<LoginDTO> login(@Valid @RequestBody LoginDTO loginDTO) {
 
         UsernamePasswordAuthenticationToken authenticationToken = 
         new UsernamePasswordAuthenticationToken(

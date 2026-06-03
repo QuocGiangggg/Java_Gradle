@@ -9,13 +9,13 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.http.HttpStatus;
-import vn.hoidanit.jobhunter.service.error.IdInvalidException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 
 import vn.hoidanit.jobhunter.domain.User;
 import vn.hoidanit.jobhunter.service.UserServices;
+import vn.hoidanit.jobhunter.util.error.IdInvalidException;
 
 @RestController
 public class UserController {
