@@ -19,15 +19,14 @@ import org.springframework.security.authentication.BadCredentialsException;
 public class GlobalException {
 
     @ExceptionHandler(value = {
-            IdInvalidException.class,
             UsernameNotFoundException.class,
             BadCredentialsException.class
     })
-    public ResponseEntity<RestResponse<Object>> handleIdInvalidException(IdInvalidException ex) {
+    public ResponseEntity<RestResponse<Object>> handleIdException(Exception ex) {
         RestResponse<Object> res = new RestResponse<Object>();
         res.setStatuscode(HttpStatus.BAD_REQUEST.value());
-        res.setMessage("checkmate hoi dan it");
         res.setError(ex.getMessage());
+        res.setMessage("Exception occurs....");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
     }
 
