@@ -11,8 +11,8 @@ import lombok.Getter;
 import lombok.Setter;
 import jakarta.persistence.Id;
 
-@Entity
 @Table(name = "companies")
+@Entity
 @Getter
 @Setter
 public class Company {
