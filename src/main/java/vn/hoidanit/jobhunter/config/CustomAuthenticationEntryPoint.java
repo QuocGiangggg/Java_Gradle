@@ -9,12 +9,10 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationEntryPoint;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import vn.hoidanit.jobhunter.domain.RestResponse;
-
-
 import java.io.IOException;
+import java.util.Optional;
 
 @Component
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
@@ -22,7 +20,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     private final AuthenticationEntryPoint delegate = new BearerTokenAuthenticationEntryPoint();
     private final ObjectMapper mapper;
 
-    public CustomAuthenticationEntryPoint(ObjectMapper mapper){
+    public CustomAuthenticationEntryPoint(ObjectMapper mapper) {
         this.mapper = mapper;
     }
 
@@ -34,7 +32,12 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
 
         RestResponse<Object> res = new RestResponse<Object>();
         res.setStatuscode(HttpStatus.UNAUTHORIZED.value());
-        res.setError(authException.getCause().getMessage());
+
+        String errorMessage = Optional.ofNullable(authException.getCause())
+                .map(Throwable::getMessage)
+                .orElse(authException.getMessage());
+        res.setError(errorMessage);
+
         res.setMessage("Token không hợp lệ(hết hạn, không đúng định dang,....");
 
         mapper.writeValue(response.getWriter(), res);
