@@ -8,14 +8,19 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import jakarta.validation.Valid;
 
 import vn.hoidanit.jobhunter.domain.Company;
 import vn.hoidanit.jobhunter.domain.RestResponse;
+import vn.hoidanit.jobhunter.domain.dto.ResultPaginationDTO;
 import vn.hoidanit.jobhunter.service.CompanyService;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class CompanyController {
@@ -33,9 +38,17 @@ public class CompanyController {
     }
 
     @GetMapping("/companies")
-    public ResponseEntity<List<Company>> getAllCompany() {
-        List<Company> fullcompanies = this.companyService.fetchAllCompany();
-        return ResponseEntity.ok(fullcompanies);
+    public ResponseEntity<ResultPaginationDTO> getAllCompany(
+            @RequestParam("current") Optional<String> currentOptional,
+            @RequestParam("pageSize") Optional<String> pageSizeOptional) {
+        String sCurrent = currentOptional.isPresent() ? currentOptional.get() : "";
+        String sPageSize = pageSizeOptional.isPresent() ? pageSizeOptional.get() : "";
+
+        int current = Integer.parseInt(sCurrent);
+        int pageSize = Integer.parseInt(sPageSize);
+        Pageable pabgeable = PageRequest.of(current-1, pageSize);
+
+        return ResponseEntity.status(HttpStatus.OK).body(this.companyService.fetchAllCompany(pabgeable));
     }
 
     @DeleteMapping("/companies/{id}")
