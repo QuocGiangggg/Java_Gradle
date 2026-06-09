@@ -28,19 +28,19 @@ public class CompanyService {
         return this.companyRepository.save(company);
     }
 
-    public ResultPaginationDTO fetchAllCompany(Specification<Company> pabgeable) {
-        List<Company> pageCompany = this.companyRepository.findAll(pabgeable);
+    public ResultPaginationDTO fetchAllCompany(Specification<Company> spec, Pageable pageable) {
+        Page<Company> pageCompany = this.companyRepository.findAll(spec, pageable);
         ResultPaginationDTO rs = new ResultPaginationDTO();
         Meta mt = new Meta();
 
-        // mt.setPage(pageCompany.getNumber() + 1);
-        // mt.setPageSize(pageCompany.getSize());
+        mt.setPage(pageCompany.getNumber() + 1);
+        mt.setPageSize(pageCompany.getSize());
 
-        // mt.setPages(pageCompany.getTotalPages());
-        // mt.setTotal(pageCompany.getTotalElements());
+        mt.setPages(pageCompany.getTotalPages());
+        mt.setTotal(pageCompany.getTotalElements());
 
         rs.setMeta(mt);
-        rs.setResult(pageCompany);
+        rs.setResult(pageCompany.getContent());
 
         return rs;
     }
