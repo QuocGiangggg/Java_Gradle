@@ -1,6 +1,7 @@
 package vn.hoidanit.jobhunter.service;
 
 import org.springframework.stereotype.Service;
+
 import vn.hoidanit.jobhunter.repository.CompanyRepository;
 import vn.hoidanit.jobhunter.domain.Company;
 import vn.hoidanit.jobhunter.domain.dto.ResultPaginationDTO;
@@ -11,6 +12,8 @@ import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.Optional;
+
+import org.springframework.data.jpa.domain.Specification;
 
 @Service
 public class CompanyService {
@@ -25,19 +28,19 @@ public class CompanyService {
         return this.companyRepository.save(company);
     }
 
-    public ResultPaginationDTO fetchAllCompany(Pageable pabgeable) {
-        Page<Company> pageCompany = this.companyRepository.findAll(pabgeable);
+    public ResultPaginationDTO fetchAllCompany(Specification<Company> pabgeable) {
+        List<Company> pageCompany = this.companyRepository.findAll(pabgeable);
         ResultPaginationDTO rs = new ResultPaginationDTO();
         Meta mt = new Meta();
 
-        mt.setPage(pageCompany.getNumber());
-        mt.setPageSize(pageCompany.getSize());
+        // mt.setPage(pageCompany.getNumber() + 1);
+        // mt.setPageSize(pageCompany.getSize());
 
-        mt.setPages(pageCompany.getTotalPages());
-        mt.setTotal(pageCompany.getTotalElements());
+        // mt.setPages(pageCompany.getTotalPages());
+        // mt.setTotal(pageCompany.getTotalElements());
 
         rs.setMeta(mt);
-        rs.setResult(pageCompany.getContent());
+        rs.setResult(pageCompany);
 
         return rs;
     }
