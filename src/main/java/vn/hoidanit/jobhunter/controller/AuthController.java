@@ -12,9 +12,10 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import jakarta.validation.Valid;
 import vn.hoidanit.jobhunter.util.SecurityUtil;
 import vn.hoidanit.jobhunter.domain.dto.ResLoginDTO;
-
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @RestController
+@RequestMapping("/api/v1")
 public class AuthController {
 
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
@@ -33,7 +34,7 @@ public class AuthController {
                 loginDTO.getPassword());
 
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-        
+
         // crreate token
 
         String access_token = this.securityUtil.createToken(authentication);
