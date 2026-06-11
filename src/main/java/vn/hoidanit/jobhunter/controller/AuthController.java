@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.security.oauth2.jwt.Jwt;
 
 import jakarta.validation.Valid;
 import vn.hoidanit.jobhunter.domain.User;
@@ -51,6 +53,7 @@ public class AuthController {
 
         // crreate token
 
+        // set thông tin người dùng đăng nhập vào con text(có thể sử dụng sau này)
         SecurityContextHolder.getContext().setAuthentication(authentication);
         ResLoginDTO resLoginDTO = new ResLoginDTO();
         User currentUserDB = this.userServices.handleGetUserByUsername(loginDTO.getUsername());
@@ -63,9 +66,11 @@ public class AuthController {
             resLoginDTO.setUser(userLogin);
         }
 
+        // create access token
         String access_token = this.securityUtil.createAccessToken(authentication, resLoginDTO.getUser());
         resLoginDTO.setAccessToken(access_token);
 
+        // create refresh-token
         String refresh_token = this.securityUtil.createRefreshToken(loginDTO.getUsername(), resLoginDTO);
 
         // update user
@@ -100,5 +105,16 @@ public class AuthController {
             userLogin.setName(currentUserDB.getName());
         }
         return ResponseEntity.ok().body(userLogin);
+    }
+
+    @GetMapping("/auth/refresh")
+    @ApiMessage("Get user by refresh token")
+    public ResponseEntity<String> getRefreshToken(
+            @CookieValue(name = "refresh_token") String refresh_token) {
+
+        // check valid
+        Jwt decodedToken = this.securityUtil.checkValidToken(refresh_token);
+        String email = decodedToken.getSubject();
+        return ResponseEntity.ok().body(email);
     }
 }

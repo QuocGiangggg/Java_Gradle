@@ -2,10 +2,13 @@ package vn.hoidanit.jobhunter.util;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.JwsHeader;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
@@ -47,12 +50,18 @@ public class SecurityUtil {
         Instant now = Instant.now();
         Instant validity = now.plus(this.accessTokenExpiration, ChronoUnit.SECONDS);
 
+        // hardcode permission
+        List<String> listAuthority = new ArrayList<String>();
+        listAuthority.add("ROLE_USER_CREATE");
+        listAuthority.add("ROLE_USER_UPDATE");
+
         // Tạo token JWT
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuedAt(now)
                 .expiresAt(validity)
                 .subject(authentication.getName())
                 .claim("user", dto)
+                .claim("permission", listAuthority)
                 .build();
         JwsHeader header = JwsHeader.with(JWT_ALGORITHM).build();
         return this.jwtEncoder.encode(JwtEncoderParameters.from(header, claims)).getTokenValue();
@@ -71,6 +80,24 @@ public class SecurityUtil {
                 .build();
         JwsHeader header = JwsHeader.with(JWT_ALGORITHM).build();
         return this.jwtEncoder.encode(JwtEncoderParameters.from(header, claims)).getTokenValue();
+    }
+
+    private SecretKey getSecretKey() {
+
+        byte[] keyBytes = Base64.from(jwtKey).decode();
+        return new SecretKeySpec(keyBytes, 0, keyBytes.length,
+                JWT_ALGORITHM.getName());
+    }
+
+    public Jwt checkValidToken(String token) {
+        NimbusJwtDecoder jwtDecoder = NimbusJwtDecoder.withSecretKey(
+                getSecretKey()).macAlgorithm(SecurityUtil.JWT_ALGORITHM).build();
+        try {
+            return jwtDecoder.decode(token);
+        } catch (Exception e) {
+            System.out.println(">>> Refresh token Error: " + e.getMessage());
+            throw e;
+        }
     }
 
     /**
