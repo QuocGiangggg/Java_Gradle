@@ -1,29 +1,26 @@
 package vn.hoidanit.jobhunter.controller;
 
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-
-import vn.hoidanit.jobhunter.domain.dto.LoginDTO;
-
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
-import vn.hoidanit.jobhunter.util.SecurityUtil;
+import vn.hoidanit.jobhunter.domain.User;
+import vn.hoidanit.jobhunter.domain.dto.LoginDTO;
 import vn.hoidanit.jobhunter.domain.dto.ResLoginDTO;
 import vn.hoidanit.jobhunter.service.UserServices;
-
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.http.HttpHeaders;
-import org.springframework.beans.factory.annotation.Value;
-
-import vn.hoidanit.jobhunter.domain.User;
+import vn.hoidanit.jobhunter.util.SecurityUtil;
+import vn.hoidanit.jobhunter.util.annotation.ApiMessage;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -54,7 +51,6 @@ public class AuthController {
 
         // crreate token
 
-        String access_token = this.securityUtil.createAccessToken(authentication);
         SecurityContextHolder.getContext().setAuthentication(authentication);
         ResLoginDTO resLoginDTO = new ResLoginDTO();
         User currentUserDB = this.userServices.handleGetUserByUsername(loginDTO.getUsername());
@@ -67,6 +63,7 @@ public class AuthController {
             resLoginDTO.setUser(userLogin);
         }
 
+        String access_token = this.securityUtil.createAccessToken(authentication, resLoginDTO.getUser());
         resLoginDTO.setAccessToken(access_token);
 
         String refresh_token = this.securityUtil.createRefreshToken(loginDTO.getUsername(), resLoginDTO);
@@ -85,5 +82,23 @@ public class AuthController {
         return ResponseEntity.ok()
                 .header(HttpHeaders.SET_COOKIE, responseCookie.toString())
                 .body(resLoginDTO);
+
+    }
+
+    @GetMapping("/auth/account")
+    @ApiMessage("fetch account")
+    public ResponseEntity<ResLoginDTO.UserLogin> getAccount() {
+
+        String email = SecurityUtil.getCurrentUserLogin().isPresent() ? SecurityUtil.getCurrentUserLogin().get() : "";
+
+        User currentUserDB = this.userServices.handleGetUserByUsername(email);
+
+        ResLoginDTO.UserLogin userLogin = new ResLoginDTO.UserLogin();
+        if (currentUserDB != null) {
+            userLogin.setId(currentUserDB.getId());
+            userLogin.setEmail(currentUserDB.getEmail());
+            userLogin.setName(currentUserDB.getName());
+        }
+        return ResponseEntity.ok().body(userLogin);
     }
 }
