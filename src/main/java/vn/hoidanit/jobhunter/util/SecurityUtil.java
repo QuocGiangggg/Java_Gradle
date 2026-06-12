@@ -21,10 +21,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import com.nimbusds.jose.util.Base64;
+
+import vn.hoidanit.jobhunter.domain.response.ResLoginDTO;
+
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
-
-import vn.hoidanit.jobhunter.domain.dto.ResLoginDTO;
 
 @Service
 public class SecurityUtil {
