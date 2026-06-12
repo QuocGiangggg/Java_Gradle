@@ -1,4 +1,4 @@
-package vn.hoidanit.jobhunter.domain;
+package vn.hoidanit.jobhunter.domain.response;
 
 public class RestResponse<T> {
     private int statuscode;
@@ -6,8 +6,6 @@ public class RestResponse<T> {
 
     private Object message;
     private T data;
-
-
 
     public int getStatuscode() {
         return statuscode;
@@ -40,5 +38,5 @@ public class RestResponse<T> {
     public void setData(T data) {
         this.data = data;
     }
-    
+
 }
