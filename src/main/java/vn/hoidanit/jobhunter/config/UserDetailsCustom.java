@@ -1,4 +1,4 @@
-package vn.hoidanit.jobhunter.service;
+package vn.hoidanit.jobhunter.config;
 
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;

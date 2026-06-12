@@ -1,7 +1,10 @@
 package vn.hoidanit.jobhunter.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class ResLoginDTO {
 
+    @JsonProperty("access_token")
     private String accessToken;
     private UserLogin user;
 
@@ -59,6 +62,25 @@ public class ResLoginDTO {
         public void setName(String name) {
             this.name = name;
         }
+    }
 
+    public static class UserGetAccount {
+        private UserLogin user;
+
+        public UserLogin getUser() {
+            return user;
+        }
+
+        public void setUser(UserLogin user) {
+            this.user = user;
+        }
+
+        public UserGetAccount(UserLogin user) {
+            this.user = user;
+        }
+
+        public UserGetAccount() {
+
+        }
     }
 }
