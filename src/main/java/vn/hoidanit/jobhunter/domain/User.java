@@ -16,6 +16,8 @@ import java.time.Instant;
 
 import vn.hoidanit.jobhunter.util.constant.GenderEnum;
 import vn.hoidanit.jobhunter.util.SecurityUtil;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.JoinColumn;
 
 @Entity
 @Table(name = "users")
@@ -72,6 +74,10 @@ public class User {
         this.email = email;
         this.password = password;
     }
+
+    @ManyToOne
+    @JoinColumn(name = "company_id")
+    private Company company;
 
     public Long getId() {
         return id;

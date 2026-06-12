@@ -1,9 +1,10 @@
 package vn.hoidanit.jobhunter.domain;
 
 import java.time.Instant;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -16,6 +17,7 @@ import lombok.Getter;
 import lombok.Setter;
 import vn.hoidanit.jobhunter.util.SecurityUtil;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 
 @Table(name = "companies")
 @Entity
@@ -38,7 +40,6 @@ public class Company {
 
     private String logo;
 
-    // @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss a", timezone = "GMT+7")
     private Instant createdAt;
 
     private Instant updatedAt;
@@ -46,6 +47,9 @@ public class Company {
     private String createdBy;
 
     private String updatedBy;
+
+    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
+    List<User> users;
 
     @PrePersist
     public void handleBeforeCreate() {
