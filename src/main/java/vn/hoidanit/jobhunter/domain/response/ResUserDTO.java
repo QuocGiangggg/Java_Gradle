@@ -18,6 +18,15 @@ public class ResUserDTO {
         private long id;
         private String name;
 
+        public CompanyUser(){
+
+        }
+
+        public CompanyUser(long id, String name){
+            this.id = id;
+            this.name = name;
+        }
+
         public long getId() {
             return id;
         }
@@ -48,7 +57,7 @@ public class ResUserDTO {
     }
 
     public ResUserDTO(long id, String email, String name, GenderEnum gender, String address, int age, Instant updatedAt,
-            Instant createdAt) {
+            Instant createdAt, CompanyUser company) {
         this.id = id;
         this.email = email;
         this.name = name;
@@ -57,6 +66,7 @@ public class ResUserDTO {
         this.age = age;
         this.updatedAt = updatedAt;
         this.createdAt = createdAt;
+        this.company = company;
     }
 
     public long getId() {

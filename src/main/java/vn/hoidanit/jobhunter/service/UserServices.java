@@ -71,7 +71,10 @@ public class UserServices {
                         item.getAddress(),
                         item.getAge(),
                         item.getUpdatedAt(),
-                        item.getCreatedAt()))
+                        item.getCreatedAt(),
+                        new ResUserDTO.CompanyUser(
+                                item.getCompany() != null ? item.getCompany().getId() : 0,
+                                item.getCompany() != null ? item.getCompany().getName() : null)))
                 .collect(Collectors.toList());
         rs.setResult(listUser);
         return rs;
@@ -92,6 +95,12 @@ public class UserServices {
             currentUser.setGender(reqUser.getGender());
             currentUser.setAge(reqUser.getAge());
             currentUser.setName(reqUser.getName());
+
+            // check company
+            if (reqUser.getCompany() != null) {
+                Optional<Company> companyOptional = this.companyService.findById(reqUser.getCompany().getId());
+                currentUser.setCompany(companyOptional.isPresent() ? companyOptional.get() : null);
+            }
 
             currentUser = this.userRepository.save(currentUser);
         }
@@ -147,6 +156,13 @@ public class UserServices {
 
     public ResUpdateUserDTO convertToResUpdateUserDTO(User user) {
         ResUpdateUserDTO res = new ResUpdateUserDTO();
+        ResUpdateUserDTO.CompanyUser com = new ResUpdateUserDTO.CompanyUser();
+
+        if (user.getCompany() != null) {
+            com.setId(user.getCompany().getId());
+            com.setName(user.getCompany().getName());
+            res.setCompany(com);
+        }
         res.setId(user.getId());
         res.setName(user.getName());
         res.setAge(user.getAge());
