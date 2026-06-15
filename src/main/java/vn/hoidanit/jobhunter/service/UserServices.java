@@ -1,5 +1,7 @@
 package vn.hoidanit.jobhunter.service;
 
+import vn.hoidanit.jobhunter.domain.Company;
+import vn.hoidanit.jobhunter.service.CompanyService;
 import vn.hoidanit.jobhunter.domain.User;
 import vn.hoidanit.jobhunter.domain.response.ResCreateUserDTO;
 import vn.hoidanit.jobhunter.domain.response.ResUpdateUserDTO;
@@ -20,12 +22,19 @@ import java.util.stream.Collectors;
 public class UserServices {
 
     private final UserRepository userRepository;
+    private final CompanyService companyService;
 
-    public UserServices(UserRepository userRepository) {
+    public UserServices(UserRepository userRepository, CompanyService companyService) {
         this.userRepository = userRepository;
+        this.companyService = companyService;
     }
 
     public User handleCreateUser(User user) {
+        // check company
+        if (user.getCompany() != null) {
+            Optional<Company> companyOptional = this.companyService.findById(user.getCompany().getId());
+            user.setCompany(companyOptional.isPresent() ? companyOptional.get() : null);
+        }
         return this.userRepository.save(user);
     }
 
@@ -99,6 +108,7 @@ public class UserServices {
 
     public ResCreateUserDTO convertToResCreateUserDTO(User user) {
         ResCreateUserDTO res = new ResCreateUserDTO();
+        ResCreateUserDTO.CompanyUser com = new ResCreateUserDTO.CompanyUser();
         res.setId(user.getId());
         res.setEmail(user.getEmail());
         res.setName(user.getName());
@@ -106,11 +116,24 @@ public class UserServices {
         res.setCreatedAt(user.getCreatedAt());
         res.setGender(user.getGender());
         res.setAddress(user.getAddress());
+
+        if (user.getCompany() != null) {
+            com.setId(user.getCompany().getId());
+            com.setName(user.getCompany().getName());
+            res.setCompany(com);
+        }
         return res;
     }
 
     public ResUserDTO convertToResUserDTO(User user) {
         ResUserDTO res = new ResUserDTO();
+        ResUserDTO.CompanyUser com = new ResUserDTO.CompanyUser();
+
+        if (user.getCompany() != null) {
+            com.setId(user.getCompany().getId());
+            com.setName(user.getCompany().getName());
+            res.setCompany(com);
+        }
         res.setId(user.getId());
         res.setEmail(user.getEmail());
         res.setName(user.getName());

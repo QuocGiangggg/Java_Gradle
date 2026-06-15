@@ -79,6 +79,14 @@ public class User {
     @JoinColumn(name = "company_id")
     private Company company;
 
+    public Company getCompany() {
+        return this.company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
+    }
+
     public Long getId() {
         return id;
     }
