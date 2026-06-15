@@ -49,6 +49,10 @@ public class Company {
     @JsonIgnore
     private List<User> users;
 
+    @OneToMany(mappedBy = "company", fetch = FetchType.LAZY)
+    @JsonIgnore
+    List<Job> jobs;
+
     // --- HÀM GETTER / SETTER GÕ TAY (THAY THẾ CHO LOMBOK) ---
     public long getId() {
         return id;
