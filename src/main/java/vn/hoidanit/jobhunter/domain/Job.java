@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,6 +23,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.EnumType;
 import vn.hoidanit.jobhunter.util.SecurityUtil;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "jobs")
@@ -39,7 +41,11 @@ public class Job {
     private String description;
     private Instant startDate;
     private Instant endDate;
-    private boolean isActive;
+    private boolean active;
+
+    @NotBlank(message = "name không được để trống!")
+    private String name;
+
     private Instant createdAt;
     private Instant updatedAt;
     private String createdBy;
@@ -50,7 +56,7 @@ public class Job {
     private Company company;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JsonIgnore
+    @JsonIgnoreProperties(value = { "jobs" })
     @JoinTable(name = "job_skill", joinColumns = @JoinColumn(name = "job_id"), inverseJoinColumns = @JoinColumn(name = "skill_id"))
     private List<Skill> skills;
 
@@ -71,7 +77,7 @@ public class Job {
     }
 
     public Job(long id, String location, double salary, int quantity, LevelEnum level, String description,
-            Instant startDate, Instant endDate, boolean isActive, Instant createdAt, Instant updatedAt,
+            Instant startDate, Instant endDate, boolean isActive, String name, Instant createdAt, Instant updatedAt,
             String createdBy, String updatedBy) {
         this.id = id;
         this.location = location;
@@ -81,11 +87,13 @@ public class Job {
         this.description = description;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.isActive = isActive;
+        this.active = active;
+        this.name = name;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.createdBy = createdBy;
         this.updatedBy = updatedBy;
+
     }
 
     public Job() {
@@ -156,11 +164,11 @@ public class Job {
     }
 
     public boolean isActive() {
-        return isActive;
+        return active;
     }
 
-    public void setActive(boolean isActive) {
-        this.isActive = isActive;
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public Instant getCreatedAt() {
@@ -209,5 +217,13 @@ public class Job {
 
     public void setSkills(List<Skill> skills) {
         this.skills = skills;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
