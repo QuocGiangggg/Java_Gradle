@@ -21,8 +21,9 @@ public class FileService {
     private String baseURI;
 
     public void createDirectory(String folder) throws URISyntaxException {
-
-        URI uri = new URI(folder);
+        // Sử dụng URI.create để tự động chuẩn hóa chuỗi URL bao gồm cả khoảng trắng nếu
+        // có
+        URI uri = URI.create(folder);
         Path path = Paths.get(uri);
         File tmpDir = new File(path.toString());
         if (!tmpDir.isDirectory()) {
@@ -33,18 +34,26 @@ public class FileService {
                 e.printStackTrace();
             }
         } else {
-            System.out.println(">>> SKIP MAKING DIRECTORY SUCCESSFUL, ALREDY EXIST");
+            System.out.println(">>> SKIP MAKING DIRECTORY SUCCESSFUL, ALREADY EXIST");
         }
-
     }
 
-    public void store(MultipartFile file, String folder) throws URISyntaxException, IOException {
+    public String store(MultipartFile file, String folder) throws URISyntaxException, IOException {
         String finalName = System.currentTimeMillis() + "-" + file.getOriginalFilename();
-        URI uri = new URI(baseURI + folder + "/" + finalName);
+        // Khi truyền tách biệt: scheme ("file"), host (null), và path,
+        // Java sẽ TỰ ĐỘNG mã hóa khoảng trắng sang %20 một cách hợp lệ.
+
+        // Cắt bỏ tiền tố "file://" trong baseURI để lấy đường dẫn thuần túy
+        String cleanPath = baseURI.replace("file://", "") + folder + "/" + finalName;
+
+        // Khởi tạo URI bằng constructor 4 tham số an toàn bảo mật ký tự đặc biệt
+        URI uri = new URI("file", null, cleanPath, null);
 
         Path path = Paths.get(uri);
         try (InputStream inputStream = file.getInputStream()) {
             Files.copy(inputStream, path, StandardCopyOption.REPLACE_EXISTING);
         }
+
+        return finalName;
     }
 }
