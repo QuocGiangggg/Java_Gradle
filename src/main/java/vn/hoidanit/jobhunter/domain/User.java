@@ -11,12 +11,16 @@ import jakarta.persistence.PreUpdate;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.persistence.FetchType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.time.Instant;
+import java.util.List;
 
 import vn.hoidanit.jobhunter.util.constant.GenderEnum;
 import vn.hoidanit.jobhunter.util.SecurityUtil;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.JoinColumn;
 
 @Entity
@@ -49,6 +53,10 @@ public class User {
     private Instant updatedAt;
     private String createdBy;
     private String updatedBy;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonIgnore
+    List<Resume> resumes;
 
     @PrePersist
     public void handleBeforeCreate() {
