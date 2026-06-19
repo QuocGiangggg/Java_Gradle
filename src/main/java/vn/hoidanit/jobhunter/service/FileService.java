@@ -1,6 +1,8 @@
 package vn.hoidanit.jobhunter.service;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -11,8 +13,11 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import vn.hoidanit.jobhunter.util.error.StorageException;
 
 @Service
 public class FileService {
@@ -21,11 +26,14 @@ public class FileService {
     private String baseURI;
 
     public void createDirectory(String folder) throws URISyntaxException {
-        // Sử dụng URI.create để tự động chuẩn hóa chuỗi URL bao gồm cả khoảng trắng nếu
-        // có
-        URI uri = URI.create(folder);
+        // CHUẨN HÓA: Cắt bỏ "file://" và dùng constructor 4 tham số để tránh lỗi
+        // Windows Path
+        String cleanPath = folder.replace("file://", "");
+        URI uri = new URI("file", null, cleanPath, null);
+
         Path path = Paths.get(uri);
         File tmpDir = new File(path.toString());
+
         if (!tmpDir.isDirectory()) {
             try {
                 Files.createDirectory(tmpDir.toPath());
@@ -40,20 +48,48 @@ public class FileService {
 
     public String store(MultipartFile file, String folder) throws URISyntaxException, IOException {
         String finalName = System.currentTimeMillis() + "-" + file.getOriginalFilename();
-        // Khi truyền tách biệt: scheme ("file"), host (null), và path,
-        // Java sẽ TỰ ĐỘNG mã hóa khoảng trắng sang %20 một cách hợp lệ.
 
-        // Cắt bỏ tiền tố "file://" trong baseURI để lấy đường dẫn thuần túy
-        String cleanPath = baseURI.replace("file://", "") + folder + "/" + finalName;
+        // Đưa baseURI về dạng Path sạch trước
+        Path basePath = Paths.get(new URI(baseURI));
 
-        // Khởi tạo URI bằng constructor 4 tham số an toàn bảo mật ký tự đặc biệt
-        URI uri = new URI("file", null, cleanPath, null);
+        // Dùng resolve để Java tự động ráp các phân đoạn thư mục hợp lệ theo OS
+        // (Windows/Linux)
+        Path targetPath = basePath.resolve(folder).resolve(finalName);
 
-        Path path = Paths.get(uri);
+        System.out.println(">>> TRONG CODE STORE (GHI FILE): " + targetPath.toAbsolutePath().toString());
         try (InputStream inputStream = file.getInputStream()) {
-            Files.copy(inputStream, path, StandardCopyOption.REPLACE_EXISTING);
+            Files.copy(inputStream, targetPath, StandardCopyOption.REPLACE_EXISTING);
         }
 
         return finalName;
+    }
+
+    public long getFileLength(String fileName, String folder) throws URISyntaxException {
+        Path basePath = Paths.get(new URI(baseURI));
+        Path targetPath = basePath.resolve(folder).resolve(fileName);
+
+        File tmpDir = targetPath.toFile();
+
+        if (!tmpDir.exists() || tmpDir.isDirectory()) {
+            return 0;
+        }
+        return tmpDir.length();
+    }
+
+    public InputStreamResource getResource(String fileName, String folder)
+            throws URISyntaxException, FileNotFoundException, StorageException {
+
+        Path basePath = Paths.get(new URI(baseURI));
+        Path targetPath = basePath.resolve(folder).resolve(fileName);
+
+        System.out.println(">>> TRONG CODE GET_RESOURCE (ĐỌC FILE): " + targetPath.toAbsolutePath().toString());
+
+        File file = targetPath.toFile();
+
+        if (!file.exists()) {
+            throw new StorageException("File with name = " + fileName + " not found");
+        }
+
+        return new InputStreamResource(new FileInputStream(file));
     }
 }
