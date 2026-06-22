@@ -191,4 +191,11 @@ public class User {
         this.updatedBy = updatedBy;
     }
 
+    public List<Resume> getResumes() {
+        return resumes;
+    }
+
+    public void setResumes(List<Resume> resumes) {
+        this.resumes = resumes;
+    }
 }

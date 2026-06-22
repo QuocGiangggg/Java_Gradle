@@ -1,5 +1,7 @@
 package vn.hoidanit.jobhunter.controller;
 
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestMapping;
 import vn.hoidanit.jobhunter.service.JobService;
 import vn.hoidanit.jobhunter.util.annotation.ApiMessage;
 import vn.hoidanit.jobhunter.domain.response.ResultPaginationDTO;
@@ -25,6 +27,8 @@ import org.springframework.data.jpa.domain.Specification;
 import vn.hoidanit.jobhunter.util.error.IdInvalidException;
 import com.turkraft.springfilter.boot.Filter;
 
+@RestController
+@RequestMapping("/api/v1")
 public class JobController {
 
     private final JobService jobService;

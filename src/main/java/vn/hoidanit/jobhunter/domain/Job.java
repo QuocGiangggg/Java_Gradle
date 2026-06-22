@@ -226,6 +226,14 @@ public class Job {
         this.skills = skills;
     }
 
+    public List<Resume> getResumes() {
+        return resumes;
+    }
+
+    public void setResumes(List<Resume> resumes) {
+        this.resumes = resumes;
+    }
+
     public String getName() {
         return name;
     }
