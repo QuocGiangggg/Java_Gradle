@@ -1,7 +1,6 @@
 package vn.hoidanit.jobhunter.domain;
 
 import vn.hoidanit.jobhunter.util.SecurityUtil;
-import org.springframework.data.annotation.Id;
 
 import vn.hoidanit.jobhunter.util.constant.ResumStateEnum;
 import jakarta.validation.constraints.NotBlank;
@@ -18,6 +17,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Id;
 
 @Entity
 @Table(name = "resumes")
