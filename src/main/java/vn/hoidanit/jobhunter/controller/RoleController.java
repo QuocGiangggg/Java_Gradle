@@ -37,9 +37,10 @@ public class RoleController {
     @ApiMessage("Create a role")
     public ResponseEntity<Role> create(@Valid @RequestBody Role r) throws IdInvalidException {
         // check name
-        if (this.roleService.existByName(r.getName())) {
-            throw new IdInvalidException("Role với name = " + r.getName() + "đã tồn tại!");
-        }
+        // if (this.roleService.existByName(r.getName())) {
+        // throw new IdInvalidException("Role với name = " + r.getName() + "đã tồn
+        // tại!");
+        // }
 
         return ResponseEntity.status(HttpStatus.CREATED).body(this.roleService.create(r));
     }
