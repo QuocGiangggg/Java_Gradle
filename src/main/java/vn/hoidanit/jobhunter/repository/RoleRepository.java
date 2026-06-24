@@ -10,5 +10,5 @@ import vn.hoidanit.jobhunter.domain.Role;
 @Repository
 public interface RoleRepository extends JpaRepository<Role, Long>, JpaSpecificationExecutor<Role> {
 
-    boolean existByName(String name);
+    boolean existsByName(String name);
 }
