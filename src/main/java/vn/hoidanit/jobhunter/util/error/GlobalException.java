@@ -26,7 +26,7 @@ public class GlobalException {
     })
     public ResponseEntity<RestResponse<Object>> handleIdException(Exception ex) {
         RestResponse<Object> res = new RestResponse<Object>();
-        res.setStatuscode(HttpStatus.BAD_REQUEST.value());
+        res.setStatusCode(HttpStatus.BAD_REQUEST.value());
         res.setError(ex.getMessage());
         res.setMessage("Exception occurs....");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);
@@ -37,7 +37,7 @@ public class GlobalException {
     })
     public ResponseEntity<RestResponse<Object>> handleNotFoundException(Exception ex) {
         RestResponse<Object> res = new RestResponse<Object>();
-        res.setStatuscode(HttpStatus.NOT_FOUND.value());
+        res.setStatusCode(HttpStatus.NOT_FOUND.value());
         res.setError(ex.getMessage());
         res.setMessage("404 Not Found. Url may not exist....");
 
@@ -50,7 +50,7 @@ public class GlobalException {
         final List<FieldError> fieldErrors = result.getFieldErrors();
 
         RestResponse<Object> res = new RestResponse<Object>();
-        res.setStatuscode(HttpStatus.BAD_REQUEST.value());
+        res.setStatusCode(HttpStatus.BAD_REQUEST.value());
         res.setMessage(ex.getBody().getDetail());
 
         List<String> errors = fieldErrors.stream().map(f -> f.getDefaultMessage()).collect(Collectors.toList());
@@ -65,7 +65,7 @@ public class GlobalException {
     })
     public ResponseEntity<RestResponse<Object>> handleFileUploadException(Exception ex) {
         RestResponse<Object> res = new RestResponse<Object>();
-        res.setStatuscode(HttpStatus.BAD_REQUEST.value());
+        res.setStatusCode(HttpStatus.BAD_REQUEST.value());
         res.setError(ex.getMessage());
         res.setMessage("Exception upload file....");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(res);

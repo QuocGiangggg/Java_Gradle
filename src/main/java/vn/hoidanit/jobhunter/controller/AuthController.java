@@ -187,7 +187,7 @@ public class AuthController {
         // remove refresh token cookie
 
         ResponseCookie responseCookie = ResponseCookie
-                .from("new_refresh_token", null)
+                .from("refresh_token", null)
                 .httpOnly(true)
                 .secure(true)
                 .path("/")
