@@ -54,6 +54,15 @@ public class Company {
     List<Job> jobs;
 
     // --- HÀM GETTER / SETTER GÕ TAY (THAY THẾ CHO LOMBOK) ---
+
+    public List<Job> getJobs() {
+        return jobs;
+    }
+
+    public void setJobs(List<Job> jobs) {
+        this.jobs = jobs;
+    }
+
     public long getId() {
         return id;
     }
