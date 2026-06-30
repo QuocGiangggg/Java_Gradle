@@ -110,4 +110,11 @@ public class Skill {
         this.jobs = jobs;
     }
 
+    public List<Subscriber> getSubscribers() {
+        return subscribers;
+    }
+
+    public void setSubscribers(List<Subscriber> subscribers) {
+        this.subscribers = subscribers;
+    }
 }
