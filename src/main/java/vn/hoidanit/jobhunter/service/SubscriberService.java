@@ -22,7 +22,7 @@ public class SubscriberService {
     }
 
     public boolean isExistByEmail(String email) {
-        return this.subscriberRepository.existByEmail(email);
+        return this.subscriberRepository.existsByEmail(email);
     }
 
     public Subscriber createSubscriber(Subscriber subs) {
