@@ -20,7 +20,11 @@ public class EmailController {
     @GetMapping("/email")
     @ApiMessage("Send simple email")
     public String sendSimpleEmail() {
-        this.emailService.sendSimpleEmail();
+        // this.emailService.sendSimpleEmail();
+        // this.emailService.sendEmailSync("dqgiang6@gmail.com", "test send email",
+        // "<h1><b>Argentina vô địch WC 2026</b></h1>", false, true);
+
+        this.emailService.sendEmailFromTemplateSync("dqgiang6@gmail.com", "test send email", "job");
         return "ok";
     }
 }
