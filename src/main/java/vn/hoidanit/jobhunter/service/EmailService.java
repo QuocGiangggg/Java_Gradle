@@ -17,6 +17,7 @@ import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 
 @Service
 public class EmailService {
@@ -56,12 +57,18 @@ public class EmailService {
         }
     }
 
-    public void sendEmailFromTemplateSync(String to, String subject, String templateName) {
+    @Async
+    public void sendEmailFromTemplateSync(String to,
+            String subject,
+            String templateName,
+            String username,
+            Object value) {
+
         Context context = new Context();
-        List<Job> arrJob = this.jobRepository.findAll();
-        String name = "DQG";
-        context.setVariable("name1", name);
-        context.setVariable("jobs", arrJob);
+        // List<Job> arrJob = this.jobRepository.findAll();
+        // String name = "DQG";
+        context.setVariable("name", username);
+        context.setVariable("jobs", value);
         String content = this.templateEngine.process(templateName, context);
         this.sendEmailSync(to, subject, content, false, true);
     }
