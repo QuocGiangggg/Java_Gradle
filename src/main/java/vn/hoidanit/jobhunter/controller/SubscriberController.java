@@ -14,6 +14,7 @@ import vn.hoidanit.jobhunter.domain.Subscriber;
 import vn.hoidanit.jobhunter.service.SubscriberService;
 import vn.hoidanit.jobhunter.util.annotation.ApiMessage;
 import vn.hoidanit.jobhunter.util.error.IdInvalidException;
+import vn.hoidanit.jobhunter.util.SecurityUtil;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -49,5 +50,13 @@ public class SubscriberController {
         }
 
         return ResponseEntity.ok().body(this.subscriberService.update(subsDB, subsRequest));
+    }
+
+    @PostMapping("/subscribers/skills")
+    @ApiMessage("Get subscriber skills")
+    public ResponseEntity<Subscriber> getSubscriberSkills() throws IdInvalidException {
+        String email = SecurityUtil.getCurrentUserLogin().isPresent() == true ? SecurityUtil.getCurrentUserLogin().get()
+                : "";
+        return ResponseEntity.ok().body(this.subscriberService.findByEmail(email));
     }
 }

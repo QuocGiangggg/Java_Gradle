@@ -3,6 +3,7 @@ package vn.hoidanit.jobhunter.service;
 import java.util.stream.Collectors;
 import java.util.List;
 
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import vn.hoidanit.jobhunter.repository.JobRepository;
@@ -66,6 +67,11 @@ public class SubscriberService {
         return this.subscriberRepository.findById(id).orElse(null);
     }
 
+    // @Scheduled(cron = "*/10 * * * * *")
+    // public void testCron() {
+    // System.out.println("test cron");
+    // }
+
     public ResEmailJob convertJobToSendEmail(Job job) {
         ResEmailJob res = new ResEmailJob();
         res.setName(job.getName());
@@ -108,5 +114,9 @@ public class SubscriberService {
                 }
             }
         }
+    }
+
+    public Subscriber findByEmail(String email) {
+        return this.subscriberRepository.findByEmail(email);
     }
 }

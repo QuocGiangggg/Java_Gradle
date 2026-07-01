@@ -150,7 +150,7 @@ public class ResumeService {
                 ? SecurityUtil.getCurrentUserLogin().get()
                 : "";
 
-        FilterNode node = filterParser.parse("email =" + email + "'");
+        FilterNode node = filterParser.parse("email : '" + email + "'");
         FilterSpecification<Resume> spec = filterSpecificationConverter.convert(node);
         Page<Resume> pageResume = this.resumeRepository.findAll(spec, pageable);
 
@@ -164,6 +164,11 @@ public class ResumeService {
         mt.setTotal(pageResume.getTotalElements());
 
         rs.setMeta(mt);
+
+        List<ResFetchResumeDTO> listResume = pageResume.getContent()
+                .stream().map(item -> this.getResume(item))
+                .collect(Collectors.toList());
+        rs.setResult(listResume);
 
         return rs;
     }
